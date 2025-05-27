@@ -8,8 +8,11 @@ from typing import List, Optional
 from datetime import date
 from app.models.user import User
 from app.core.dependencies import get_current_user
+from app.services.whatsapp import send_whatsapp_message
+from app.models.client import Client
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
+
 
 @router.post("/", response_model=OrderResponse)
 def create_order(order_data: OrderCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
@@ -27,6 +30,14 @@ def create_order(order_data: OrderCreate, db: Session = Depends(get_db), user=De
     order = Order(client_id=order_data.client_id, items=items)
     db.add(order)
     db.commit()
+    client = db.query(Client).filter(Client.id == order.client_id).first()
+    if client and client.phone_number:
+        try:
+            send_whatsapp_message(
+                to_number=client.phone_number,
+                message=f"Olá {client.name}, seu pedido #{order.id} foi recebido com sucesso! 🛒")
+        except Exception as e:
+            print(f"[WhatsApp] Falha ao enviar mensagem: {e}")
     db.refresh(order)
     return order
 

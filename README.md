@@ -111,7 +111,16 @@ Todos os testes estão em `tests/`, incluindo:
 
 ## Integração com WhatsApp (opcional)
 
- Integração real não foi ativada por falta de sinal móvel para validar o número via Facebook Developer.
+- A API está pronta para integrar com a WhatsApp Cloud API (Meta).
+
+- Envio automático:
+
+- Após a criação de um pedido, é enviada uma mensagem ao número do cliente (campo phone_number).
+
+- Configuração no .env:
+
+* WHATSAPP_TOKEN=seu_token_meta
+* WHATSAPP_PHONE_NUMBER_ID=seu_id
 
 ## Autenticação
 Via OAuth2 Password Flow:
